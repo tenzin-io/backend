@@ -1,0 +1,22 @@
+version: '3'
+services:
+  certbot:
+    env_file:
+      - cloudflare.env
+    build:
+      context: ./build-certbot
+    volumes:
+      - ./dns_names:/dns_names 
+      - certs_dir:/etc/letsencrypt
+
+  nginx:
+    build:
+      context: ./build-nginx
+    restart: always
+    ports:
+      - 443:443
+    volumes:
+      - certs_dir:/etc/nginx/certs.d/
+
+volumes:
+  certs_dir:
